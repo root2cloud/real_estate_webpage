@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="agent_no_access" name="Agent No Access">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <div class="card shadow-lg border-danger">
+                            <div class="card-body text-center p-5">
+                                <i class="fa fa-lock fa-5x text-danger mb-4"></i>
+                                <h2 class="text-danger mb-3">Access Denied</h2>
+                                <p class="lead mb-4">
+                                    <t t-if="message">
+                                        <t t-esc="message"/>
+                                    </t>
+                                    <t t-else="">
+                                        You do not have agent portal access.<br/>
+                                        Please contact the administrator.
+                                    </t>
+                                </p>
+                                <div class="d-grid gap-2 col-6 mx-auto">
+                                    <a href="/my" class="btn btn-primary btn-lg">
+                                        <i class="fa fa-home"/> My Account
+                                    </a>
+                                    <a href="/" class="btn btn-outline-secondary">
+                                        <i class="fa fa-globe"/> Go to Website
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

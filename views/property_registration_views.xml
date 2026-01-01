@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_property_registration_tree" model="ir.ui.view">
+        <field name="name">property.registration.tree</field>
+        <field name="model">property.registration</field>
+        <field name="arch" type="xml">
+            <list string="Property Registrations">
+                <field name="customer_name"/>
+                <field name="property_name"/>
+                <field name="phone_number"/>
+                <field name="category"/>
+                <field name="city"/>
+                <field name="state"/>
+                <field name="status" decoration-success="status == 'approved'"
+                       decoration-danger="status == 'rejected'"
+                       decoration-info="status == 'submitted'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View - IMPROVED LAYOUT -->
+    <record id="view_property_registration_form" model="ir.ui.view">
+        <field name="name">property.registration.form</field>
+        <field name="model">property.registration</field>
+        <field name="arch" type="xml">
+            <form string="Property Registration">
+
+                <!-- ⭐ HEADER WITH ACTION BUTTONS -->
+                <header>
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-success"
+                            invisible="status in ('approved', 'rejected')"/>
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            class="btn-danger"
+                            invisible="status in ('approved', 'rejected')"/>
+
+                    <!-- Status Badge -->
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="submitted,approved,rejected"/>
+                </header>
+
+                <sheet>
+                    <!-- ⭐ PROPERTY IMAGE (Avatar Style) -->
+                    <field name="image"
+                           widget="image"
+                           class="oe_avatar"
+                           options="{'size': [150, 150]}"/>
+
+                    <!-- ⭐ TITLE SECTION -->
+                    <div class="oe_title">
+                        <label for="property_name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="property_name"
+                                   placeholder="Property Name"
+                                   required="1"/>
+                        </h1>
+                        <h3>
+                            <field name="category" placeholder="Property Category"/>
+                        </h3>
+                    </div>
+
+                    <!-- ⭐ ORGANIZED GROUPS -->
+                    <group>
+                        <!-- LEFT COLUMN: Customer & Property Details -->
+                        <group string="Customer Information">
+                            <field name="customer_name" placeholder="Full Name"/>
+                            <field name="phone_number" widget="phone"/>
+                            <field name="email" widget="email"/>
+                        </group>
+
+                        <!-- RIGHT COLUMN: Property Details -->
+                        <group string="Property Details">
+                            <field name="sq_yards"/>
+                            <field name="price" widget="monetary"/>
+                            <field name="place"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <!-- LEFT COLUMN: Location -->
+                        <group string="Location Details">
+                            <field name="location" placeholder="Exact location/address"/>
+                            <field name="city" required="1"/>
+                            <field name="state"/>
+                            <field name="country_id"/>
+                        </group>
+
+                        <!-- RIGHT COLUMN: Status Info -->
+                        <group string="Registration Status">
+                            <field name="status" readonly="1"
+                                   decoration-success="status == 'approved'"
+                                   decoration-danger="status == 'rejected'"/>
+                            <field name="create_date" string="Submitted On" readonly="1"/>
+                            <field name="write_date" string="Last Updated" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- ⭐ ADDITIONAL IMAGES SECTION -->
+                    <notebook>
+                        <page string="Additional Images">
+                            <div class="oe_title">
+                                <h3>Property Gallery</h3>
+                                <p class="text-muted">Upload multiple images of the property</p>
+                            </div>
+                            <field name="attachment_ids"
+                                   widget="many2many_binary"
+                                   options="{'preview_image': true}"
+                                   nolabel="1"/>
+                        </page>
+
+                        <!--                        <page string="Notes &amp; Comments">-->
+                        <!--                            <field name="notes"-->
+                        <!--                                   widget="text"-->
+                        <!--                                   placeholder="Add any additional notes or comments about this registration..."/>-->
+                        <!--                        </page>-->
+                    </notebook>
+
+                </sheet>
+
+                <!-- Chatter for communication -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_property_registration_kanban" model="ir.ui.view">
+        <field name="name">property.registration.kanban</field>
+        <field name="model">property.registration</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_group_by="status" sample="1">
+                <field name="id"/>
+                <field name="customer_name"/>
+                <field name="property_name"/>
+                <field name="phone_number"/>
+                <field name="image"/>
+                <field name="price"/>
+                <field name="city"/>
+                <field name="state"/>
+                <field name="status"/>
+                <field name="category"/>
+                <field name="sq_yards"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+
+                            <div class="o_kanban_record_top mb-2">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="property_name"/>
+                                    </strong>
+                                    <small class="o_kanban_record_subtitle text-muted">
+                                        <field name="category"/>
+                                    </small>
+                                </div>
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('property.registration', 'image', record.id.raw_value)"
+                                         alt="Property"
+                                         style="max-width: 80px; max-height: 80px; border-radius: 5px;"/>
+                                </div>
+                            </div>
+
+                            <div class="o_kanban_record_body">
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <!-- ⭐ FIXED: Added title attribute -->
+                                        <i class="fa fa-user text-muted" title="Customer"/>
+                                        <strong>
+                                            <field name="customer_name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <!-- ⭐ FIXED: Added title attribute -->
+                                        <i class="fa fa-phone text-muted" title="Phone"/>
+                                        <field name="phone_number"/>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <!-- ⭐ FIXED: Added title attribute -->
+                                        <i class="fa fa-map-marker text-muted" title="Location"/>
+                                        <field name="city"/>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <span class="badge badge-pill badge-info">
+                                            <field name="sq_yards"/>
+                                            sq.yds
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong class="text-success">
+                                            ₹
+                                            <field name="price"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_kanban_record_bottom mt-2">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="badge"
+                                          t-att-class="record.status.raw_value == 'approved' ? 'badge-success' :
+                                                  record.status.raw_value == 'rejected' ? 'badge-danger' : 'badge-info'">
+                                        <field name="status"/>
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <button name="action_approve"
+                                            type="object"
+                                            string="Approve"
+                                            class="btn btn-sm btn-success"
+                                            invisible="status in ('approved', 'rejected')"/>
+                                    <button name="action_reject"
+                                            type="object"
+                                            string="Reject"
+                                            class="btn btn-sm btn-danger"
+                                            invisible="status in ('approved', 'rejected')"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_property_registration" model="ir.actions.act_window">
+        <field name="name">Property Registrations</field>
+        <field name="res_model">property.registration</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('status', 'not in', ['approved'])]</field>
+        <field name="context">{'default_status': 'submitted'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No pending registrations!
+            </p>
+            <p>
+                All property registration requests will appear here for approval.
+            </p>
+        </field>
+    </record>
+
+
+    <!-- Menu -->
+    <menuitem id="menu_property_registration"
+              name="Property Registrations"
+              parent="menu_real_estate_root"
+              action="action_property_registration"
+              sequence="15"/>
+</odoo>

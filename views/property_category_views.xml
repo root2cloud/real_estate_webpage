@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⭐ KANBAN VIEW -->
+    <record id="view_property_category_kanban" model="ir.ui.view">
+        <field name="name">property.category.kanban</field>
+        <field name="model">property.category</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="image"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+
+                            <!-- Category Image -->
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('property.category', 'image', record.id.raw_value)"
+                                     alt="Category"
+                                     class="o_kanban_image_inner"/>
+                            </div>
+
+                            <!-- Category Details -->
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="o_kanban_record_body mt-2">
+                                    <field name="description" widget="text"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- LIST VIEW -->
+    <record id="view_property_category_list" model="ir.ui.view">
+        <field name="name">property.category.list</field>
+        <field name="model">property.category</field>
+        <field name="arch" type="xml">
+            <list string="Property Categories">
+                <field name="image" widget="image" optional="show"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="seo_title" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ⭐ IMPROVED FORM VIEW -->
+    <record id="view_property_category_form" model="ir.ui.view">
+        <field name="name">property.category.form</field>
+        <field name="model">property.category</field>
+        <field name="arch" type="xml">
+            <form string="Property Category">
+                <sheet>
+
+                    <!-- ⭐ CATEGORY IMAGE (Avatar Style) -->
+                    <field name="image"
+                           widget="image"
+                           class="oe_avatar"
+                           options="{'size': [150, 150]}"/>
+
+                    <!-- ⭐ TITLE SECTION -->
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="e.g., Residential, Commercial, Agricultural"
+                                   required="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- ⭐ ORGANIZED SECTIONS -->
+                    <group>
+                        <group string="Basic Information">
+                            <field name="description"
+                                   widget="text"
+                                   placeholder="Brief description of this property category..."/>
+                        </group>
+                    </group>
+
+                    <!-- ⭐ NOTEBOOK FOR SEO -->
+                    <notebook>
+                        <page string="SEO Configuration">
+                            <group>
+                                <group string="Search Engine Optimization">
+                                    <field name="seo_title"
+                                           placeholder="SEO-friendly title (max 60 characters)"/>
+                                    <field name="seo_description"
+                                           widget="text"
+                                           placeholder="Meta description for search engines (max 160 characters)"/>
+                                </group>
+                            </group>
+                        </page>
+
+<!--                        <page string="Statistics" invisible="1">-->
+<!--                            <group>-->
+<!--                                <group string="Usage Stats">-->
+<!--                                    <field name="property_count"-->
+<!--                                           string="Total Properties"-->
+<!--                                           readonly="1"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </page>-->
+                    </notebook>
+
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ⭐ UPDATE ACTION TO INCLUDE KANBAN -->
+    <record id="real_estate_management.action_property_category" model="ir.actions.act_window">
+        <field name="name">Property Categories</field>
+        <field name="res_model">property.category</field>
+        <field name="view_mode">kanban,list,form</field>  <!-- ⭐ Added 'kanban' -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No categories found. Let's create one!
+            </p>
+            <p>
+                Create property categories like Residential, Commercial, Agricultural, etc.
+            </p>
+        </field>
+    </record>
+
+</odoo>
